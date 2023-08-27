@@ -1,7 +1,42 @@
-import React from "react";
-import { Form, Label, Input, LinkContainer, Button, Header } from './styles'
+import React, { useCallback, useState } from 'react';
+import axios from 'axios';
+import { Success, Form, Error, Label, Input, LinkContainer, Button, Header } from './styles';
+import { Link } from 'react-router-dom';
 
 const SignUp = () => {
+  // const { data, error, revalidate } = useSWR('/api/users', fetcher);
+
+  const [email, setEmail] = useState('');
+  const [nickname, setNickName] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordCheck, setPasswordCheck] = useState('');
+  const [mismatchError, setMismatchError] = useState(false);
+
+  const onChangeEmail = useCallback((e: any) => {
+    setEmail(e.target.value);
+  }, []);
+
+  const onChangeNickname = useCallback((e: any) => {
+    setNickName(e.target.value);
+  }, []);
+
+  const onChangePassword = useCallback((e: any) => {
+    setPassword(e.target.value);
+    setMismatchError(e.target.value !== passwordCheck);
+  }, [passwordCheck]);
+
+  const onChangePasswordCheck = useCallback((e: any) => {
+    setPasswordCheck(e.target.value);
+    setMismatchError(e.target.value !== password);
+  }, [password]);
+
+  const onSubmit = useCallback((e: any)=> {
+    e.preventDefault();
+    if (!mismatchError) {
+      console.log('서버로 회원가입')
+    }
+  },[email, nickname, password, passwordCheck])
+
     return (
         <div id="container">
           <Header>Sleact</Header>
@@ -36,9 +71,9 @@ const SignUp = () => {
                 />
               </div>
               {mismatchError && <Error>비밀번호가 일치하지 않습니다.</Error>}
-              {!nickname && <Error>닉네임을 입력해주세요.</Error>}
+              {/* {!nickname && <Error>닉네임을 입력해주세요.</Error>}
               {signUpError && <Error>{signUpError}</Error>}
-              {signUpSuccess && <Success>회원가입되었습니다! 로그인해주세요.</Success>}
+              {signUpSuccess && <Success>회원가입되었습니다! 로그인해주세요.</Success>} */}
             </Label>
             <Button type="submit">회원가입</Button>
           </Form>
