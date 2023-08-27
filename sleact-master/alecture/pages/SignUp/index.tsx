@@ -8,7 +8,9 @@ import useSWR from 'swr';
 import { Success, Form, Error, Label, Input, LinkContainer, Button, Header } from './styles';
 
 const SignUp = () => {
-  const { data, error, isValidating, mutate } = useSWR('/api/users', fetcher);
+  const { data, error, isValidating, mutate } = useSWR('/api/users', fetcher, {
+    dedupingInterval: 3000,
+  });
 
   const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
@@ -39,9 +41,9 @@ const SignUp = () => {
       axios.post('/api/users', {
         email, nickname, password
       })
-        .then(()=>{
+        .then((response)=>{
           setSignUpSuccess(true);
-          mutate('api/users')
+          mutate(response.data, false)
         })
         .catch((error)=>{
           setSignUpError(error.response.data)

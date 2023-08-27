@@ -9,7 +9,7 @@ import fetcher from '@utils/fetcher';
 const LogIn = () => {
     // swr - 화면이 항상 최신으로 유지
     const { data, error, isValidating, mutate } = useSWR('http://localhost:3095/api/users', fetcher, {
-        dedupingInterval: 30000,
+        dedupingInterval: 3000,
     });
 
     const [logInError, setLogInError] = useState(false);
@@ -28,8 +28,9 @@ const LogIn = () => {
               withCredentials: true,
             },
           )
-          .then(() => {
-            mutate('/api/users')
+          .then((response) => {
+            // optimistic ui
+            mutate(response.data, false)
           })
           .catch((error) => {
             setLogInError(error.response?.status === 401);

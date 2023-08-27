@@ -5,14 +5,16 @@ import axios from "axios";
 import { Navigate } from "react-router";
 
 const Workspace = ({ children }:PropsWithChildren) => {
-    const { data, error, isValidating, mutate } = useSWR('http://localhost:3095/api/users', fetcher)
+    const { data, error, isValidating, mutate } = useSWR('http://localhost:3095/api/users', fetcher, {
+        dedupingInterval: 3000
+    })
 
     const onLogout = useCallback(() => {
         axios.post('/api/users/logout', null, {
             withCredentials: true,
         })
         .then(()=> {
-            mutate('/api/users')
+            mutate(false, false)
         })
     },[])
 
