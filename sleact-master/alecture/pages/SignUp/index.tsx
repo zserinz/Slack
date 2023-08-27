@@ -1,12 +1,14 @@
 import React, { useCallback, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import useInput from '@hooks/useInput';
 import axios from 'axios';
+import fetcher from '@utils/fetcher';
+import useSWR from 'swr';
 
 import { Success, Form, Error, Label, Input, LinkContainer, Button, Header } from './styles';
 
 const SignUp = () => {
-  // const { data, error, revalidate } = useSWR('/api/users', fetcher);
+  const { data, error, isValidating, mutate } = useSWR('/api/users', fetcher);
 
   const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
@@ -39,6 +41,7 @@ const SignUp = () => {
       })
         .then(()=>{
           setSignUpSuccess(true);
+          mutate('api/users')
         })
         .catch((error)=>{
           setSignUpError(error.response.data)
@@ -46,6 +49,14 @@ const SignUp = () => {
         .finally(()=>{});
     }
   },[email, nickname, password, passwordCheck])
+
+  if (data === undefined) {
+    return <div>로딩중...</div>;
+  }
+
+  if (data) {
+    return <Navigate to="/workspace/sleact/channel" />;
+  }
 
     return (
         <div id="container">
