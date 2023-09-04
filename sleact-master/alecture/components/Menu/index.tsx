@@ -21,7 +21,7 @@ const Menu: FC<Props> = ({
   onCloseModal,
   closeButton,
 }) => {
-  const stopPropagation = useCallback((e: any) => {
+  const stopPropagation = useCallback((e: { stopPropagation: () => void }) => {
     // 부모에게 이벤트가 전달되지 않음
     e.stopPropagation();
   }, []);
