@@ -13,7 +13,7 @@ const App: FC = () => {
         <Route path="/" element={<LogIn />} />
         <Route path="/login" element={<LogIn />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/workspace/:workspace" Component={Workspace} />
+        <Route path="/workspace/:workspace/*" element={<Workspace />} />
       </Routes>
     </Router>
   );
