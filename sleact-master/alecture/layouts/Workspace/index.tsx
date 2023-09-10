@@ -39,6 +39,8 @@ import Modal from "@components/Modal";
 import CreateChannelModal from "@components/CreateChannelModal";
 import InviteWorkspaceModal from "@components/InviteWorkspaceModal";
 import InviteChannelModal from "@components/InviteChannelModal";
+import ChannelList from "@components/ChannelList";
+import DMList from "@components/DMList";
 
 const Channel = loadable(() => import("@pages/Channel"));
 const DirectMessage = loadable(() => import("@pages/DirectMessage"));
@@ -64,13 +66,15 @@ const Workspace: VFC = () => {
     error,
     isValidating,
     mutate,
-  } = useSWR<IUser>("http://localhost:3095/api/users", fetcher, {
+  } = useSWR<IUser>("/api/users", fetcher, {
     dedupingInterval: 3000,
   });
   const { data: ChannelData, mutate: mutateChannel } = useSWR<IChannel[]>(
-    UserData
-      ? `http://localhost:3095/api/workspaces/${workspace}/chennels`
-      : null,
+    UserData ? `/api/workspaces/${workspace}/chennels` : null,
+    fetcher
+  );
+  const { data: MemberData } = useSWR<IChannel[]>(
+    UserData ? `/api/workspaces/${workspace}/members` : null,
     fetcher
   );
 
@@ -213,18 +217,14 @@ const Workspace: VFC = () => {
                 <button onClick={onLogout}>로그아웃</button>
               </WorkspaceModal>
             </Menu>
+            <ChannelList />
+            <DMList />
           </MenuScroll>
         </Channels>
         <Chats>
           <Routes>
-            <Route
-              path="/workspace/:workspace/channel/:channel"
-              element={<Channel />}
-            />
-            <Route
-              path="/workspace/:workspace/dm/:id"
-              element={<DirectMessage />}
-            />
+            <Route path="channel/:channel" element={<Channel />} />
+            <Route path="dm/:id" element={<DirectMessage />} />
           </Routes>
         </Chats>
       </WorkspaceWrapper>
